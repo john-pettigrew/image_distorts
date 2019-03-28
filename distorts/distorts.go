@@ -15,6 +15,10 @@ func (c pixelColor) RGBA() (uint32, uint32, uint32, uint32) {
 	return c.r, c.g, c.b, c.a
 }
 
+type offset struct {
+  X, Y int
+}
+
 //ChromaticAberation returns a copy of input with a random chromatic aberation effect applied
 func ChromaticAberation(input image.Image) image.Image {
 	bounds := input.Bounds()
@@ -27,20 +31,17 @@ func ChromaticAberation(input image.Image) image.Image {
 	}
 	offsetMax := smallestMax / 10
 
-	rOffsetX := rand.Intn(offsetMax) - offsetMax/2
-	rOffsetY := rand.Intn(offsetMax) - offsetMax/2
-	gOffsetX := rand.Intn(offsetMax) - offsetMax/2
-	gOffsetY := rand.Intn(offsetMax) - offsetMax/2
-	bOffsetX := rand.Intn(offsetMax) - offsetMax/2
-	bOffsetY := rand.Intn(offsetMax) - offsetMax/2
+    rOffset := offset{X: rand.Intn(offsetMax) - offsetMax/2, Y: rand.Intn(offsetMax) - offsetMax/2}
+    gOffset := offset{X: rand.Intn(offsetMax) - offsetMax/2, Y: rand.Intn(offsetMax) - offsetMax/2}
+    bOffset := offset{X: rand.Intn(offsetMax) - offsetMax/2, Y: rand.Intn(offsetMax) - offsetMax/2}
 
 	var currentPixelColor color.Color
 	for x := 0; x < bounds.Max.X; x++ {
 		for y := 0; y < bounds.Max.Y; y++ {
 
-			rOffsetColor, _, _, _ := getColorsAtOffset(input, x, y, rOffsetX, rOffsetY)
-			_, gOffsetColor, _, _ := getColorsAtOffset(input, x, y, gOffsetX, gOffsetY)
-			_, _, bOffsetColor, _ := getColorsAtOffset(input, x, y, bOffsetX, bOffsetY)
+			rOffsetColor, _, _, _ := getColorsAtOffset(input, x, y, rOffset.X, rOffset.Y)
+			_, gOffsetColor, _, _ := getColorsAtOffset(input, x, y, gOffset.X, gOffset.Y)
+			_, _, bOffsetColor, _ := getColorsAtOffset(input, x, y, bOffset.X, bOffset.Y)
 			_, _, _, a := input.At(x, y).RGBA()
 			currentPixelColor = pixelColor{
 				r: rOffsetColor,
