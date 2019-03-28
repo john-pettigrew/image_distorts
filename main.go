@@ -36,6 +36,7 @@ func main() {
 	}
 
 	newImg := distorts.ChromaticAberation(inputImg)
+	newImg = distorts.PixelShift(newImg)
 
 	//Create output file
 	output, err := os.Create(outputPath)

@@ -56,6 +56,40 @@ func ChromaticAberation(input image.Image) image.Image {
 	return newImg
 }
 
+//PixelShift randomly shifts bands of pixels
+func PixelShift(input image.Image) image.Image {
+  rand.Seed(time.Now().UTC().UnixNano())
+
+  bounds := input.Bounds()
+  newImg := image.NewRGBA(bounds)
+
+  offsetMax := bounds.Max.X / 5
+
+  offsetAmount := rand.Intn(offsetMax) - offsetMax / 2
+  offsetStart := rand.Intn(offsetMax)
+  offsetRange := rand.Intn(offsetMax/3)
+
+  var currentPixelColor color.Color
+  var r, g, b, a uint32
+  for x := 0; x < bounds.Max.X; x++{
+    for y := 0; y < bounds.Max.Y; y++{
+      if x <= offsetStart && x < offsetStart + offsetRange{
+        r, g, b, a = getColorsAtOffset(input, x, y, offsetAmount, 0)
+      }else{
+        r, g, b, a = input.At(x, y).RGBA()
+      }
+      currentPixelColor = pixelColor{
+          r: r,
+          g: g,
+          b: b,
+          a: a,
+      }
+      newImg.Set(x, y, currentPixelColor)
+    }
+  }
+  return newImg
+}
+
 func getColorsAtOffset(input image.Image, x int, y int, offsetX int, offsetY int) (uint32, uint32, uint32, uint32) {
 	bounds := input.Bounds()
 	currentOffsetX := x + offsetX
