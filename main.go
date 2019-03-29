@@ -9,6 +9,8 @@ import (
 	_ "image/png"
 	"log"
 	"os"
+	"math/rand"
+	"time"
 
 	distorts "github.com/john-pettigrew/image_distort/distorts"
 )
@@ -34,9 +36,15 @@ func main() {
 		fmt.Println(err)
 		errorAndExit("Error reading image")
 	}
+    newImg := inputImg
+	newImg = distorts.ChromaticAberation(newImg)
 
-	newImg := distorts.ChromaticAberation(inputImg)
-	newImg = distorts.PixelShift(newImg)
+
+  rand.Seed(time.Now().UTC().UnixNano())
+  shiftNum := rand.Intn(4)
+    for i := 0; i < shiftNum; i++{
+      newImg = distorts.PixelShift(newImg)
+    }
 
 	//Create output file
 	output, err := os.Create(outputPath)

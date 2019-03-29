@@ -63,18 +63,18 @@ func PixelShift(input image.Image) image.Image {
   bounds := input.Bounds()
   newImg := image.NewRGBA(bounds)
 
-  offsetMax := bounds.Max.X / 5
+  offsetMax := bounds.Max.Y / 5
 
-  offsetAmount := rand.Intn(offsetMax) - offsetMax / 2
-  offsetStart := rand.Intn(offsetMax)
-  offsetRange := rand.Intn(offsetMax/3)
+  offsetAmount := rand.Intn(offsetMax)
+  offsetStart := rand.Intn(bounds.Max.X)
+  offsetRange := rand.Intn(bounds.Max.X / 3)
 
   var currentPixelColor color.Color
   var r, g, b, a uint32
   for x := 0; x < bounds.Max.X; x++{
     for y := 0; y < bounds.Max.Y; y++{
-      if x <= offsetStart && x < offsetStart + offsetRange{
-        r, g, b, a = getColorsAtOffset(input, x, y, offsetAmount, 0)
+      if x >= offsetStart && x < offsetStart + offsetRange{
+        r, g, b, a = getColorsAtOffset(input, x, y, 0, offsetAmount)
       }else{
         r, g, b, a = input.At(x, y).RGBA()
       }
